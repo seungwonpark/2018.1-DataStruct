@@ -22,6 +22,7 @@ class List{
 
 
 	// in order to write other class here, it needs to be 'public static'.
+	// writing like 'class ListArrayBased' -> just an instance of class List.
 	// however, writing class at other file is recommended.
 	/*****************************************/
 	// public static class ListIndexOutOfBoundsException extends Exception{
