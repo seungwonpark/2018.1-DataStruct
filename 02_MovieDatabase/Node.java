@@ -1,3 +1,5 @@
+import java.util.NoSuchElementException;
+
 public class Node<T> {
     private T item;
     private Node<T> next;
@@ -29,10 +31,14 @@ public class Node<T> {
     }
     
     public final void insertNext(T obj) {
-		throw new UnsupportedOperationException("not implemented yet");
+        Node<T> newNode = new Node<T>(obj, this.next); // next? this.next?
+        this.next = newNode;
     }
     
     public final void removeNext() {
-		throw new UnsupportedOperationException("not implemented yet");
+        if(this.next == null){
+            throw new NoSuchElementException();
+        }
+        this.next = this.next.next;
     }
 }
