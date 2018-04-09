@@ -58,6 +58,40 @@ public class MyLinkedList<T> implements ListInterface<T> {
 	public void removeAll() {
 		head.setNext(null);
 	}
+
+	@Override
+	public void insert(T item){
+		Node<T> now = head;
+		while(now.hasNext()){
+			T nextItem = now.getNext().getItem();
+			if(nextItem.compareTo(item) > 0){
+				// proceed while nextItem < item
+				break;
+			}
+			now = now.hasNext();
+		}
+		now.insertNext(item);
+		numItems += 1;
+	}
+
+	@Override
+	public void delete(T item){
+		Node<T> now = head;
+		bool foundItem = false;
+		while(now.hasNext()){
+			T nextItem = now.getNext().getItem();
+			if(nextItem.equals(item)){
+				foundItem = true;
+				now.removeNext();
+				numItems -= 1;
+				break;
+			}
+			now = now.hasNext();
+		}
+		if(!foundItem){
+			throw new NoSuchElementException(); 
+		}
+	}
 }
 
 class MyLinkedListIterator<T> implements Iterator<T> {

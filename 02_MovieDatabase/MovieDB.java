@@ -8,16 +8,26 @@ import java.util.NoSuchElementException;
  * 유지하는 데이터베이스이다. 
  */
 public class MovieDB {
+    private MyLinkedList l;
     public MovieDB() {
-        // FIXME implement this
-    	
-    	// HINT: MovieDBGenre 클래스를 정렬된 상태로 유지하기 위한 
-    	// MyLinkedList 타입의 멤버 변수를 초기화 한다.
+        l = new MyLinkedList<Genre>();
     }
 
     public void insert(MovieDBItem item) {
-        // FIXME implement this
         // Insert the given item to the MovieDB.
+        Genre nowGenre = new Genre(item.getGenre());
+        boolean isNewGenre = true;
+        for(Genre genre : l){
+            if(nowGenre.equals(genre)){ // genre already exists in l
+                genre.insert(item.getTitle());
+                isNewGenre = false;
+                break;
+            }
+        }
+        if(isNewGenre){
+            nowGenre.insert(item.getTitle());
+            l.insert(nowGenre);
+        }
 
     	// Printing functionality is provided for the sake of debugging.
         // This code should be removed before submitting your work.
@@ -25,10 +35,15 @@ public class MovieDB {
     }
 
     public void delete(MovieDBItem item) {
-        // FIXME implement this
         // Remove the given item from the MovieDB.
+        Genre nowGenre = new Genre(item.getGenre());
+        for(Genre genre : l){ // find genre which is same with nowGenre
+            if(nowGenre.equals(genre)){
+                genre.delete(item.getTitle());
+                break;
+            }
+        }
     	
-    	// Printing functionality is provided for the sake of debugging.
         // This code should be removed before submitting your work.
         System.err.printf("[trace] MovieDB: DELETE [%s] [%s]\n", item.getGenre(), item.getTitle());
     }
@@ -75,6 +90,8 @@ public class MovieDB {
 }
 
 class Genre extends Node<String> implements Comparable<Genre> {
+    private MyLinkedList<MovieDBItem> l;
+    private String name;
 	public Genre(String name) {
 		super(name);
 		throw new UnsupportedOperationException("not implemented yet");
@@ -82,17 +99,31 @@ class Genre extends Node<String> implements Comparable<Genre> {
 	
 	@Override
 	public int compareTo(Genre o) {
-		throw new UnsupportedOperationException("not implemented yet");
+        return this.name.compareTo(name);
 	}
 
 	@Override
 	public int hashCode() {
-		throw new UnsupportedOperationException("not implemented yet");
+        int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		throw new UnsupportedOperationException("not implemented yet");
+        if(obj == null) return false;
+        if(this.getClass() != obj.getClass()) return false;
+        if(this == obj) return true;
+        Genre now = (Genre) obj;
+        if(this.name == null){
+            if(now.name != null){
+                return false;
+            }
+        }
+        else{
+            return this.name.equals(other.name);
+        }
 	}
 }
 

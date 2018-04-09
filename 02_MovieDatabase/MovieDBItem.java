@@ -25,15 +25,26 @@ public class MovieDBItem implements Comparable<MovieDBItem> {
 
     @Override
     public int compareTo(MovieDBItem other) {
-        // TODO delete the line below and implement this method
-        throw new UnsupportedOperationException();
+        if(this == null || this.genre == null || this.title == null){
+            throw new NullPointerException();
+        }
+        if(other == null || other.genre == null || other.title == null){
+            throw new NullPointerException();
+        }
+        // first, compare genre.
+        int comparedValue = this.genre.compareTo(other.genre);
+        if(comparedValue == 0){ // if genre is identical,
+            // then compare title.
+            comparedValue = this.title.compareTo(other.title);
+        }
+        return comparedValue;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (this == null || obj == null)
             return false;
         if (getClass() != obj.getClass())
             return false;
