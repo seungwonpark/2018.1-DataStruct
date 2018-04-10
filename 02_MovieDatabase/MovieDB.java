@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
  * 유지하는 데이터베이스이다. 
  */
 public class MovieDB {
-    private MyLinkedList l;
+    private MyLinkedList<Genre> l;
     public MovieDB() {
         l = new MyLinkedList<Genre>();
     }
