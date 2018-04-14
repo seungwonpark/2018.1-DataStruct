@@ -1,4 +1,3 @@
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -10,21 +9,6 @@ public class MyLinkedList<T extends Comparable<T>> implements ListInterface<T> {
 	public MyLinkedList() {
 		head = new Node<T>(null);
 	}
-
-    /**
-     * {@code Iterable<T>}를 구현하여 iterator() 메소드를 제공하는 클래스의 인스턴스는
-     * 다음과 같은 자바 for-each 문법의 혜택을 볼 수 있다.
-     * 
-     * <pre>
-     *  for (T item: iterable) {
-     *  	item.someMethod();
-     *  }
-     * </pre>
-     * 
-     * @see PrintCmd#apply(MovieDB)
-     * @see SearchCmd#apply(MovieDB)
-     * @see java.lang.Iterable#iterator()
-     */
     public final Iterator<T> iterator() {
     	return new MyLinkedListIterator<T>(this);
     }
@@ -95,9 +79,6 @@ public class MyLinkedList<T extends Comparable<T>> implements ListInterface<T> {
 }
 
 class MyLinkedListIterator<T extends Comparable<T>> implements Iterator<T> {
-	// FIXME implement this
-	// Implement the iterator for MyLinkedList.
-	// You have to maintain the current position of the iterator.
 	private MyLinkedList<T> list;
 	private Node<T> curr;
 	private Node<T> prev;
