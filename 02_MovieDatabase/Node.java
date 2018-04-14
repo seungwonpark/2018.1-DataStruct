@@ -29,6 +29,10 @@ public class Node<T> {
     public Node<T> getNext() {
     	return this.next;
     }
+
+    public boolean hasNext() {
+        return next != null;
+    }
     
     public final void insertNext(T obj) {
         Node<T> newNode = new Node<T>(obj, this.next); // next? this.next?

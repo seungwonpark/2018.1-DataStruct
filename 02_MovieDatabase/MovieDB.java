@@ -49,59 +49,64 @@ public class MovieDB {
     }
 
     public MyLinkedList<MovieDBItem> search(String term) {
-        // FIXME implement this
-        // Search the given term from the MovieDB.
-        // You should return a linked list of MovieDBItem.
-        // The search command is handled at SearchCmd class.
-    	
-    	// Printing search results is the responsibility of SearchCmd class. 
-    	// So you must not use System.out in this method to achieve specs of the assignment.
-    	
-        // This tracing functionality is provided for the sake of debugging.
-        // This code should be removed before submitting your work.
     	System.err.printf("[trace] MovieDB: SEARCH [%s]\n", term);
-    	
-    	// FIXME remove this code and return an appropriate MyLinkedList<MovieDBItem> instance.
-    	// This code is supplied for avoiding compilation error.   
         MyLinkedList<MovieDBItem> results = new MyLinkedList<MovieDBItem>();
-
+        for(Genre genre : l){
+            MyLinkedList<MovieDBItem> temp = genre.search(term);
+            for(MovieDBItem item : temp){
+                results.insert(item);
+            }
+        }
         return results;
     }
     
     public MyLinkedList<MovieDBItem> items() {
-        // FIXME implement this
-        // Search the given term from the MovieDatabase.
-        // You should return a linked list of QueryResult.
-        // The print command is handled at PrintCmd class.
-
-    	// Printing movie items is the responsibility of PrintCmd class. 
-    	// So you must not use System.out in this method to achieve specs of the assignment.
-
-    	// Printing functionality is provided for the sake of debugging.
-        // This code should be removed before submitting your work.
         System.err.printf("[trace] MovieDB: ITEMS\n");
-
-    	// FIXME remove this code and return an appropriate MyLinkedList<MovieDBItem> instance.
-    	// This code is supplied for avoiding compilation error.   
         MyLinkedList<MovieDBItem> results = new MyLinkedList<MovieDBItem>();
-        
+        for(Genre genre : l){
+            MyLinkedList<MovieDBItem> temp = genre.getList();
+            for(MovieDBItem item : temp){
+                results.insert(item);
+            }
+        }
     	return results;
     }
 }
 
-class Genre extends Node<String> implements Comparable<Genre> {
+class Genre implements Comparable<Genre> {
     private MyLinkedList<MovieDBItem> l;
     private String name;
+
 	public Genre(String name) {
-		super(name);
-		throw new UnsupportedOperationException("not implemented yet");
+		l = new MyLinkedList<MovieDBItem>();
+        this.name = name;
 	}
+
+    public MyLinkedList<MovieDBItem> getList(){
+        return l;
+    }
+    public MyLinkedList<MovieDBItem> search(String term){
+        MyLinkedList<MovieDBItem> results = new MyLinkedList<MovieDBItem>();
+        for(MovieDBItem item : l){
+            if(item.getTitle().contains(term)){
+                results.insert(item);
+            }
+        }
+        return results;
+    }
+
+    public void insert(String title){
+        l.insert(new MovieDBItem(name, title));
+    }
+    public void delete(String title){
+        l.delete(new MovieDBItem(name, title));
+    }
+
 	
 	@Override
 	public int compareTo(Genre o) {
         return this.name.compareTo(name);
 	}
-
 	@Override
 	public int hashCode() {
         int prime = 31;
@@ -109,7 +114,6 @@ class Genre extends Node<String> implements Comparable<Genre> {
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
         if(obj == null) return false;
@@ -117,47 +121,45 @@ class Genre extends Node<String> implements Comparable<Genre> {
         if(this == obj) return true;
         Genre now = (Genre) obj;
         if(this.name == null){
-            if(now.name != null){
-                return false;
-            }
+            return now.name == null;
         }
         else{
-            return this.name.equals(other.name);
+            return this.name.equals(now.name);
         }
 	}
 }
 
-class MovieList implements ListInterface<String> {	
-	public MovieList() {
-	}
+// class MovieList implements ListInterface<String> {	
+// 	public MovieList() {
+// 	}
 
-	@Override
-	public Iterator<String> iterator() {
-		throw new UnsupportedOperationException("not implemented yet");
-	}
+// 	@Override
+// 	public Iterator<String> iterator() {
+// 		throw new UnsupportedOperationException("not implemented yet");
+// 	}
 
-	@Override
-	public boolean isEmpty() {
-		throw new UnsupportedOperationException("not implemented yet");
-	}
+// 	@Override
+// 	public boolean isEmpty() {
+// 		throw new UnsupportedOperationException("not implemented yet");
+// 	}
 
-	@Override
-	public int size() {
-		throw new UnsupportedOperationException("not implemented yet");
-	}
+// 	@Override
+// 	public int size() {
+// 		throw new UnsupportedOperationException("not implemented yet");
+// 	}
 
-	@Override
-	public void add(String item) {
-		throw new UnsupportedOperationException("not implemented yet");
-	}
+// 	@Override
+// 	public void add(String item) {
+// 		throw new UnsupportedOperationException("not implemented yet");
+// 	}
 
-	@Override
-	public String first() {
-		throw new UnsupportedOperationException("not implemented yet");
-	}
+// 	@Override
+// 	public String first() {
+// 		throw new UnsupportedOperationException("not implemented yet");
+// 	}
 
-	@Override
-	public void removeAll() {
-		throw new UnsupportedOperationException("not implemented yet");
-	}
-}
+// 	@Override
+// 	public void removeAll() {
+// 		throw new UnsupportedOperationException("not implemented yet");
+// 	}
+// }
