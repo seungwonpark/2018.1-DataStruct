@@ -28,10 +28,6 @@ public class MovieDB {
             nowGenre.insert(item.getTitle());
             l.insert(nowGenre);
         }
-
-    	// Printing functionality is provided for the sake of debugging.
-        // This code should be removed before submitting your work.
-        System.err.printf("[trace] MovieDB: INSERT [%s] [%s]\n", item.getGenre(), item.getTitle());
     }
 
     public void delete(MovieDBItem item) {
@@ -43,13 +39,9 @@ public class MovieDB {
                 break;
             }
         }
-    	
-        // This code should be removed before submitting your work.
-        System.err.printf("[trace] MovieDB: DELETE [%s] [%s]\n", item.getGenre(), item.getTitle());
     }
 
     public MyLinkedList<MovieDBItem> search(String term) {
-    	System.err.printf("[trace] MovieDB: SEARCH [%s]\n", term);
         MyLinkedList<MovieDBItem> results = new MyLinkedList<MovieDBItem>();
         for(Genre genre : l){
             MyLinkedList<MovieDBItem> temp = genre.search(term);
@@ -61,7 +53,6 @@ public class MovieDB {
     }
     
     public MyLinkedList<MovieDBItem> items() {
-        System.err.printf("[trace] MovieDB: ITEMS\n");
         MyLinkedList<MovieDBItem> results = new MyLinkedList<MovieDBItem>();
         for(Genre genre : l){
             MyLinkedList<MovieDBItem> temp = genre.getList();
@@ -128,38 +119,3 @@ class Genre implements Comparable<Genre> {
         }
 	}
 }
-
-// class MovieList implements ListInterface<String> {	
-// 	public MovieList() {
-// 	}
-
-// 	@Override
-// 	public Iterator<String> iterator() {
-// 		throw new UnsupportedOperationException("not implemented yet");
-// 	}
-
-// 	@Override
-// 	public boolean isEmpty() {
-// 		throw new UnsupportedOperationException("not implemented yet");
-// 	}
-
-// 	@Override
-// 	public int size() {
-// 		throw new UnsupportedOperationException("not implemented yet");
-// 	}
-
-// 	@Override
-// 	public void add(String item) {
-// 		throw new UnsupportedOperationException("not implemented yet");
-// 	}
-
-// 	@Override
-// 	public String first() {
-// 		throw new UnsupportedOperationException("not implemented yet");
-// 	}
-
-// 	@Override
-// 	public void removeAll() {
-// 		throw new UnsupportedOperationException("not implemented yet");
-// 	}
-// }
