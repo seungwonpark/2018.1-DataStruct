@@ -32,6 +32,11 @@ public class MovieDB{
 			if(genre.equals(itemGenre)){
 				genre.delete(item.getTitle());
 				existsGenre = true;
+
+				// if all movies of this genre is deleted
+				if(genre.getListSize() == 0){
+					l.delete(genre);
+				}
 				break;
 			}
 		}
@@ -86,6 +91,10 @@ class Genre implements Comparable<Genre>{
 
 	public MyLinkedList<MovieDBItem> getWholeList(){
 		return l;
+	}
+
+	public int getListSize(){
+		return l.size();
 	}
 
 	// insert/delete MovieDBItem to MyLinkedList<MovieDBItem>
