@@ -1,14 +1,23 @@
+// MyLinkedList.java
+//
+// defines:
+// public class MyLinkedList<T extends Comparable<T>> implements ListInterface<T>
+// class MyLinkedListIterator<T extends Comparable<T>> implements Iterator<T>
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+// ListInterface extends Iterable<T>
 public class MyLinkedList<T extends Comparable<T>> implements ListInterface<T> {
-	// dummy head
-	Node<T> head;
+	Node<T> head; // dummy head
 	int numItems;
 
+	// constructor
 	public MyLinkedList() {
 		head = new Node<T>(null);
 	}
+
+	// methods to access instance variables
     public final Iterator<T> iterator() {
     	return new MyLinkedListIterator<T>(this);
     }
@@ -28,6 +37,7 @@ public class MyLinkedList<T extends Comparable<T>> implements ListInterface<T> {
 		return head.getNext().getItem();
 	}
 
+	// methods to modify instance variables
 	@Override
 	public void add(T item) {
 		Node<T> last = head;
@@ -41,15 +51,15 @@ public class MyLinkedList<T extends Comparable<T>> implements ListInterface<T> {
 	@Override
 	public void removeAll() {
 		head.setNext(null);
+		// all items are removed by garbage collection.
 	}
 
 	@Override
 	public void insert(T item){
 		Node<T> now = head;
 		while(now.hasNext()){
-			T nextItem = now.getNext().getItem();
-
 			// proceed while nextItem < item
+			T nextItem = now.getNext().getItem();
 			if(nextItem.compareTo(item) > 0){
 				break;
 			}

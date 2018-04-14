@@ -1,8 +1,11 @@
+// MovieDBItem.java
+// defines:
+// public class MovieDBItem implements Comparable<MovieDBItem>
 public class MovieDBItem implements Comparable<MovieDBItem> {
-
     private final String genre;
     private final String title;
 
+    // constructor
     public MovieDBItem(String genre, String title) {
         if (genre == null) throw new NullPointerException("genre");
         if (title == null) throw new NullPointerException("title");
@@ -11,13 +14,19 @@ public class MovieDBItem implements Comparable<MovieDBItem> {
         this.title = title;
     }
 
+    // methods to access instance variables
     public String getGenre() {
         return genre;
     }
-
     public String getTitle() {
         return title;
     }
+
+    // define required methods to implement Comparable
+    //
+    // public int compareTo(MovieDBItem other)
+    // public boolean equals(Object obj)
+    // public int hashCode()
 
     @Override
     public int compareTo(MovieDBItem other) {
