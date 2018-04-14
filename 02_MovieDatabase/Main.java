@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class Main {
 
 	public static final long sec = 1000000000L, msec = 1000000L;
-	public static final long limit = 2 * sec;
+	public static final long limit = 200 * sec;
 
 	public static final List<String> bannedClasses = Arrays.asList(new String[] {
 		"java/util/ArrayList", "java/util/Vector", "java/util/LinkedList"
