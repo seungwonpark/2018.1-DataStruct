@@ -48,14 +48,25 @@ public class MyLinkedList<T extends Comparable<T>> implements ListInterface<T> {
 		Node<T> now = head;
 		while(now.hasNext()){
 			T nextItem = now.getNext().getItem();
+
+			// proceed while nextItem < item
 			if(nextItem.compareTo(item) > 0){
-				// proceed while nextItem < item
 				break;
 			}
 			now = now.getNext();
 		}
-		now.insertNext(item);
-		numItems += 1;
+		
+		// only if item doesn't exist in DB
+		boolean alreadyExists = false;
+		if(!now.equals(head)){
+			if(now.getItem().equals(item)){
+				alreadyExists = true;
+			}
+		}
+		if(!alreadyExists){
+			now.insertNext(item);
+			numItems += 1;
+		}
 	}
 
 	@Override
@@ -72,9 +83,10 @@ public class MyLinkedList<T extends Comparable<T>> implements ListInterface<T> {
 			}
 			now = now.getNext();
 		}
-		if(!foundItem){
-			throw new NoSuchElementException(); 
-		}
+		// surpress NoSuchElementException
+		// if(!foundItem){
+		// 	throw new NoSuchElementException(); 
+		// }
 	}
 }
 
