@@ -1,23 +1,24 @@
 import java.util.*;
 
 public class TreeNode{
-	private Object item;
+	private int item;
 	private TreeNode leftChild;
 	private TreeNode rightChild;
-	public TreeNode(Object newItem){
+
+	// constructors
+	public TreeNode(int newItem){
 		this.item = newItem;
 		this.leftChild = this.rightChild = null;
 	}
-	public TreeNode(Object newItem, TreeNode left, TreeNode right){
+	public TreeNode(int newItem, TreeNode left, TreeNode right){
 		this.item = newItem;
 		this.leftChild = left;
 		this.rightChild = right;
 	}
-	public Object getItem(){
+
+	// public methods
+	public int getItem(){
 		return item;
-	}
-	public void setItem(Object newItem){
-		this.item = newItem;
 	}
 	public TreeNode getLeft(){
 		return leftChild;
@@ -25,14 +26,19 @@ public class TreeNode{
 	public TreeNode getRight(){
 		return rightChild;
 	}
-	public void setLeft(TreeNode left){
+
+	// private methods
+	private void setItem(int newItem){
+		this.item = newItem;
+	}
+	private void setLeft(TreeNode left){
 		this.leftChild = left;
 	}
-	public void setRight(TreeNode right){
+	private void setRight(TreeNode right){
 		this.rightChild = right;
 	}
 
-	public Object getMin(TreeNode tNode){
+	public int getMin(TreeNode tNode) throws Exception{
 		if(tNode == null){
 			throw new Exception();
 		}
@@ -43,7 +49,7 @@ public class TreeNode{
 			return getMin(tNode.getLeft());
 		}
 	}
-	public TreeNode insertItem(TreeNode tNode, Comparable newItem){
+	public TreeNode insertItem(TreeNode tNode, int newItem){
 		if(tNode == null){
 			tNode = new TreeNode(newItem);
 		}
@@ -55,10 +61,10 @@ public class TreeNode{
 		}
 		return tNode;
 	}
-	public TreeNode retrieveItem(TreeNode tNode, Comparable searchKey){
+	public TreeNode retrieveItem(TreeNode tNode, int searchKey){
 		if(tNode == null) return null;
 		else{
-			Object now = tNode.getItem();
+			int now = tNode.getItem();
 			if(searchKey == now) return tNode;
 			else if(searchKey < now){
 				return retrieveItem(tNode.getLeft(), searchKey);
@@ -67,12 +73,11 @@ public class TreeNode{
 				return retrieveItem(tNode.getRight(), searchKey);
 			}
 		}
-		return tNode;
 	}
-	public TreeNode deleteItem(TreeNode tNode, Comparable searchKey){
+	public TreeNode deleteItem(TreeNode tNode, int searchKey) throws Exception{
 		if(tNode == null) return null;
 		else{
-			Object now = tNode.getItem();
+			int now = tNode.getItem();
 			if(searchKey == now){
 				tNode = deleteNode(tNode);
 			}
@@ -85,7 +90,7 @@ public class TreeNode{
 		}
 		return tNode;
 	}
-	public TreeNode deleteNode(TreeNode tNode){
+	public TreeNode deleteNode(TreeNode tNode) throws Exception{
 		if(tNode.getLeft() == null && tNode.getRight() == null){
 			return null;
 		}
