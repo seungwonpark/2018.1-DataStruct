@@ -38,81 +38,79 @@ public class TreeNode{
 		this.rightChild = right;
 	}
 
-	public int getMin(TreeNode tNode) throws Exception{
-		if(tNode == null){
+	public int getMin() throws Exception{
+		if(this == null){
 			throw new Exception();
 		}
-		if(tNode.getLeft() == null){
-			return tNode.getItem();
+		if(this.getLeft() == null){
+			return this.getItem();
 		}
 		else{
-			return getMin(tNode.getLeft());
+			return getMin(this.getLeft());
 		}
 	}
-	public TreeNode insertItem(TreeNode tNode, int newItem){
-		if(tNode == null){
-			tNode = new TreeNode(newItem);
+	public TreeNode insertItem(int newItem){
+		if(this == null){
+			throw new Exception();
 		}
-		else if(newItem < tNode.getItem()){
-			tNode.setLeft(insertItem(tNode.getLeft(), newItem));
+		else if(newItem < this.getItem()){
+			this.setLeft(insertItem(this.getLeft(), newItem));
 		}
 		else{
-			tNode.setRight(insertItem(tNode.getRight(), newItem));
+			this.setRight(insertItem(this.getRight(), newItem));
 		}
-		return tNode;
+		return this;
 	}
-	public TreeNode retrieveItem(TreeNode tNode, int searchKey){
-		if(tNode == null) return null;
+	public TreeNode retrieveItem(int searchKey){
+		if(this == null) return null;
 		else{
-			int now = tNode.getItem();
-			if(searchKey == now) return tNode;
-			else if(searchKey < now){
-				return retrieveItem(tNode.getLeft(), searchKey);
+			if(searchKey == item) return this;
+			else if(searchKey < item){
+				return retrieveItem(this.getLeft(), searchKey);
 			}
 			else{
-				return retrieveItem(tNode.getRight(), searchKey);
+				return retrieveItem(this.getRight(), searchKey);
 			}
 		}
 	}
-	public TreeNode deleteItem(TreeNode tNode, int searchKey) throws Exception{
-		if(tNode == null) return null;
+	public TreeNode deleteItem(int searchKey) throws Exception{
+		if(this == null) return null;
 		else{
-			int now = tNode.getItem();
-			if(searchKey == now){
-				tNode = deleteNode(tNode);
+			if(searchKey == item){
+				this = deleteNode(this);
 			}
-			else if(searchKey < now){
-				tNode.setLeft(deleteItem(tNode.getLeft(), searchKey));
+			else if(searchKey < item){
+				this.setLeft(deleteItem(this.getLeft(), searchKey));
 			}
 			else{
-				tNode.setRight(deleteItem(tNode.getRight(), searchKey));
+				this.setRight(deleteItem(this.getRight(), searchKey));
 			}
 		}
-		return tNode;
+		return this;
 	}
-	public TreeNode deleteNode(TreeNode tNode) throws Exception{
-		if(tNode.getLeft() == null && tNode.getRight() == null){
+	public TreeNode deleteNode() throws Exception{
+		if(this.getLeft() == null && this.getRight() == null){
 			return null;
 		}
-		else if(tNode.getLeft() == null){
-			return tNode.getRight();
+		else if(this.getLeft() == null){
+			return this.getRight();
 		}
-		else if(tNode.getRight() == null){
-			return tNode.getLeft();
+		else if(this.getRight() == null){
+			return this.getLeft();
 		}
 		else{
-			tNode.setItem(getMin(tNode.getRight()));
-			tNode.setRight(deleteMin(tNode.getRight()));
-			return tNode;
+			this.setItem(getMin(this.getRight()));
+			this.setRight(deleteMin(this.getRight()));
+			return this;
 		}
 	}
-	public TreeNode deleteMin(TreeNode tNode){
-		if(tNode.getLeft() == null){
-			return tNode.getRight();
+	public TreeNode deleteMin(){
+		if(this.getLeft() == null){
+			return this.getRight();
 		}
 		else{
-			tNode.setLeft(deleteMin(tNode.getLeft()));
-			return tNode;
+			this.setLeft(deleteMin(this.getLeft()));
+			return this;
 		}
 	}
 }
