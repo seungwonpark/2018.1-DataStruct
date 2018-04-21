@@ -69,7 +69,10 @@ public class CalculatorTest{
 				if (input.compareTo("q") == 0)
 					break;
 
-				converter(input);
+				ArrayList<String> postfix = converter(input);
+				for(int i=0; i<postfix.size(); i++){
+					System.out.print(postfix.get(i) + " ");
+				}
 				System.out.println("");
 				// System.out.print(postfix);
 				// Long answer = evaluation(postfix);
@@ -80,7 +83,7 @@ public class CalculatorTest{
 			}
 		}
 	}
-	private static void converter(String input) throws Exception{
+	private static ArrayList<String> converter(String input) throws Exception{
 		input = input.replaceAll("\\s+", ""); // remove all spaces
 		Pattern pattern = Pattern.compile("[\\+\\-\\*\\/\\%\\^\\(\\)]|\\d+");
 		Matcher m = pattern.matcher(input);
@@ -88,12 +91,13 @@ public class CalculatorTest{
 		boolean isPrevLong = false; // to determine unary/binary '-' operator.
 		Stack<OperatorType> opst = new Stack<OperatorType>(); // 'op'erator 'st'ack
 
+		ArrayList<String> ret = new ArrayList<String>();
 		// makes use of shunting-yard algorithm.
 		while(m.find()){
 			String now = m.group();
 			if(isLong(now)){
 				// if the token is a number
-				System.out.print(now);
+				ret.add(now);
 				isPrevLong = true;
 			}
 			else if(now.charAt(0) == '('){
@@ -107,7 +111,7 @@ public class CalculatorTest{
 						foundMatchingBracket = true;
 						break;
 					}
-					System.out.print(opst.pop().getOp());
+					ret.add(Character.toString(opst.pop().getOp()));
 				}
 				if(foundMatchingBracket == false){
 					throw new Exception();
@@ -127,6 +131,9 @@ public class CalculatorTest{
 						}
 						break;
 					case '+': case '*': case '/': case '%': case '^':
+						if(isPrevLong == false){
+							throw new Exception();
+						}
 						temp = new OperatorType(now);
 						break;
 					default:
@@ -144,7 +151,7 @@ public class CalculatorTest{
 						)
 						&& peeked.getOp() != '('
 					){
-						System.out.print(opst.pop().getOp());
+						ret.add(Character.toString(opst.pop().getOp()));
 					}
 					else{
 						break;
@@ -155,7 +162,8 @@ public class CalculatorTest{
 			}
 		}
 		while(!opst.empty()){
-			System.out.print(opst.pop().getOp());
+			ret.add(Character.toString(opst.pop().getOp()));
 		}
+		return ret;
 	}
 }
