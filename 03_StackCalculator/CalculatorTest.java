@@ -70,19 +70,79 @@ public class CalculatorTest{
 					break;
 
 				ArrayList<String> postfix = converter(input);
+				long answer = evaluation(postfix);
+				// convert/evalaute at first, and then flush outputs
+				// to print "ERROR" first if error occurs
 				for(int i=0; i<postfix.size(); i++){
 					System.out.print(postfix.get(i) + " ");
 				}
 				System.out.println("");
-				// System.out.print(postfix);
-				// Long answer = evaluation(postfix);
-				// System.out.print(answer);
+				System.out.print(answer);
+				System.out.println("");
 			}
 			catch (Exception e){
-				System.out.print("ERROR" + e.toString());
+				System.out.println("ERROR");
 			}
 		}
 	}
+
+	private static long evaluation(ArrayList<String> postfix) throws Exception{
+		Stack<Long> st = new Stack<Long>();
+		for(int i=0; i<postfix.size(); i++){
+			String now = postfix.get(i);
+			if(isLong(now)){
+				st.push(Long.parseLong(now));
+			}
+			else{
+				if(now.charAt(0) == '~'){
+					// process separtely since the argument is single
+					long numLeft = st.pop();
+					st.push((-1) * numLeft);
+				}
+				else{
+					long numRight = st.pop();
+					long numLeft = st.pop();
+					switch(now.charAt(0)){
+						case '+':
+							st.push(numLeft + numRight);
+							break;
+						case '-':
+							st.push(numLeft - numRight);
+							break;
+						case '*':
+							st.push(numLeft * numRight);
+							break;
+						case '/':
+							if(numRight == 0){
+								throw new Exception("division by zero");
+							}
+							st.push(numLeft / numRight);
+							break;
+						case '%':
+							if(numRight == 0){
+								throw new Exception("division by zero");
+							}
+							st.push(numLeft % numRight);
+							break;
+						case '^':
+							if(numLeft == 0 && numRight < 0){
+								throw new Exception("division by zero");
+							}
+							st.push((long) Math.pow((double) numLeft, (double) numRight));
+							break;
+						default:
+							throw new Exception();
+					}
+				}
+			}
+		}
+		long result = st.pop();
+		if(!st.empty()){
+			throw new Exception("cannot finish calculation");
+		}
+		return result;
+	}
+
 	private static ArrayList<String> converter(String input) throws Exception{
 		input = input.replaceAll("\\s+", ""); // remove all spaces
 		Pattern pattern = Pattern.compile("[\\+\\-\\*\\/\\%\\^\\(\\)]|\\d+");
