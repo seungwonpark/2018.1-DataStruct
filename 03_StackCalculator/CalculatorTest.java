@@ -4,10 +4,15 @@ import java.lang.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// makes comparable class "OperatorType"
+// to compare priority of operators
+// and determine whether the operator is left/right associative
 class OperatorType implements Comparable<OperatorType>{
 	private char op;
 	private int priority;
 	private boolean isLeftAssociative;
+
+	// constructor
 	public OperatorType(String x) throws Exception{
 		this.op = x.charAt(0);
 		switch(x.charAt(0)){
@@ -34,12 +39,14 @@ class OperatorType implements Comparable<OperatorType>{
 				throw new Exception("asdf");
 		}
 	}
+
 	public char getOp(){
 		return this.op;
 	}
 	public boolean isLeftAssociative(){
 		return this.isLeftAssociative;
 	}
+
 	@Override
 	public int compareTo(OperatorType other){
 		return new Integer(this.priority).compareTo(new Integer(other.priority));
@@ -47,6 +54,8 @@ class OperatorType implements Comparable<OperatorType>{
 }
 
 public class CalculatorTest{
+
+	// to parse equation, we must first determine whether the token is Long type.
 	public static boolean isLong(String s){
 		// modification from https://stackoverflow.com/a/5439547
 		try{
@@ -74,7 +83,10 @@ public class CalculatorTest{
 				// convert/evalaute at first, and then flush outputs
 				// to print "ERROR" first if error occurs
 				for(int i=0; i<postfix.size(); i++){
-					System.out.print(postfix.get(i) + " ");
+					System.out.print(postfix.get(i));
+					if(i != postfix.size() - 1){ // if not last
+						System.out.print(" ");
+					}
 				}
 				System.out.println("");
 				System.out.print(answer);
@@ -86,6 +98,7 @@ public class CalculatorTest{
 		}
 	}
 
+	// evaluates answer from postfix expression
 	private static long evaluation(ArrayList<String> postfix) throws Exception{
 		Stack<Long> st = new Stack<Long>();
 		for(int i=0; i<postfix.size(); i++){
@@ -145,6 +158,14 @@ public class CalculatorTest{
 
 	private static ArrayList<String> converter(String input) throws Exception{
 		input = input.replaceAll("\\s+", ""); // remove all spaces
+
+		// catch the invalid form: (), (-), (--), (---), ...
+		Pattern invalidpattern = Pattern.compile("\\(\\-*\\)");
+		Matcher m_temp = invalidpattern.matcher(input);
+		if(m_temp.find()){ // if invalid form of bracket (e.g. (-), (---)) is found
+			throw new Exception("invalid");
+		}
+
 		Pattern pattern = Pattern.compile("[\\+\\-\\*\\/\\%\\^\\(\\)]|\\d+");
 		Matcher m = pattern.matcher(input);
 
@@ -152,7 +173,9 @@ public class CalculatorTest{
 		Stack<OperatorType> opst = new Stack<OperatorType>(); // 'op'erator 'st'ack
 
 		ArrayList<String> ret = new ArrayList<String>();
+
 		// makes use of shunting-yard algorithm.
+		// https://en.wikipedia.org/wiki/Shunting-yard_algorithm
 		while(m.find()){
 			String now = m.group();
 			if(isLong(now)){
@@ -162,9 +185,10 @@ public class CalculatorTest{
 			}
 			else if(now.charAt(0) == '('){
 				opst.push(new OperatorType("("));
+				isPrevLong = false;
 			}
 			else if(now.charAt(0) == ')'){
-				boolean foundMatchingBracket = false;
+				boolean foundMatchingBracket = false; // check if bracket matches
 				while(!opst.empty()){
 					if(opst.peek().getOp() == '('){
 						opst.pop();
@@ -174,7 +198,7 @@ public class CalculatorTest{
 					ret.add(Character.toString(opst.pop().getOp()));
 				}
 				if(foundMatchingBracket == false){
-					throw new Exception();
+					throw new Exception("Unmatching bracket(s) found");
 				}
 			}
 			else{
