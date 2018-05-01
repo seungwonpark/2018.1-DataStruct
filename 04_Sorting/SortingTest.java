@@ -94,35 +94,111 @@ public class SortingTest
 		}
 	}
 
+	private static void swap(int[] arr, int x, int y){
+		int temp = arr[x];
+		arr[x] = arr[y];
+		arr[y] = temp;
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoBubbleSort(int[] value)
 	{
-		// TODO : Bubble Sort 를 구현하라.
-		// value는 정렬안된 숫자들의 배열이며 value.length 는 배열의 크기가 된다.
-		// 결과로 정렬된 배열은 리턴해 주어야 하며, 두가지 방법이 있으므로 잘 생각해서 사용할것.
-		// 주어진 value 배열에서 안의 값만을 바꾸고 value를 다시 리턴하거나
-		// 같은 크기의 새로운 배열을 만들어 그 배열을 리턴할 수도 있다.
+		int n = value.length;
+		boolean swapped = true;
+		while(swapped){
+			swapped = false;
+			for(int i=0; i<n-1; i++){
+				if(value[i] > value[i+1]){
+					swap(value, i, i+1);
+					swapped = true;
+				}
+			}
+		}
 		return (value);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoInsertionSort(int[] value)
 	{
-		// TODO : Insertion Sort 를 구현하라.
+		int n = value.length;
+		for(int i=1; i<n; i++){
+			int temp = value[i];
+			int j = i-1;
+			for(; j>=0 && value[j] > temp; j--){
+				value[j+1] = value[j];
+			}
+			value[j+1] = temp;
+		}
 		return (value);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
+	private static void percolateDown(int[] arr, int i, int n){
+		int child = 2*i;
+		int rightChild = 2*i+1;
+		if(child <= n){
+			if((rightChild <= n) && (arr[child] < arr[rightChild])){
+				child = rightChild;
+			}
+			if(arr[i] < arr[child]){
+				swap(arr, i, child);
+				percolateDown(arr, child, n);
+			}
+		}
+	}
 	private static int[] DoHeapSort(int[] value)
 	{
-		// TODO : Heap Sort 를 구현하라.
+		int n = value.length;
+		// Step 1. Build heap.
+		int[] heap = new int[n+1];
+		for(int i=1; i<=n; i++){
+			heap[i] = value[i-1];
+			int now = i; // to prevent modification of i
+			while(heap[now/2] < heap[now] && now > 1){
+				swap(heap, now/2, now);
+				now /= 2;
+			}
+		}
+		// Step 2. Sorting.
+		for(int i=n; i>=2; i--){
+			swap(heap, 1, i);
+			percolateDown(heap, 1, i-1);
+		}
+		value = Arrays.copyOfRange(heap, 1, heap.length);
 		return (value);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	private static int[] DoMergeSort(int[] value)
 	{
-		// TODO : Merge Sort 를 구현하라.
+		int n = value.length;
+		if(n > 1){
+			int[] arr1 = DoMergeSort(Arrays.copyOfRange(value, 0, n/2));
+			int[] arr2 = DoMergeSort(Arrays.copyOfRange(value, n/2, n));
+			int idx1 = 0, idx2 = 0, cnt = 0;
+			while(true){
+				if(idx1 == arr1.length){
+					for(int i=idx2; i<arr2.length; i++){
+						value[cnt++] = arr2[i];
+					}
+					break;
+				}
+				if(idx2 == arr2.length){
+					for(int i=idx1; i<arr1.length; i++){
+						value[cnt++] = arr1[i];
+					}
+					break;
+				}
+				if(arr1[idx1] > arr2[idx2]){
+					value[cnt++] = arr2[idx2];
+					idx2 += 1;
+				}
+				else{
+					value[cnt++] = arr1[idx1];
+					idx1 += 1;
+				}
+			}
+		}
 		return (value);
 	}
 
