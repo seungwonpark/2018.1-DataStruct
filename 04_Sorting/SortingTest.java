@@ -62,7 +62,7 @@ public class SortingTest
 						newvalue = DoMergeSort(newvalue);
 						break;
 					case 'Q':	// Quick Sort
-						newvalue = DoQuickSort(newvalue);
+						newvalue = DoQuickSort(newvalue, 0, newvalue.length-1);
 						break;
 					case 'R':	// Radix Sort
 						newvalue = DoRadixSort(newvalue);
@@ -133,11 +133,17 @@ public class SortingTest
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
+	// heap sort: 0 is the root index.
+	// 0
+	// 1 2
+	// 3 4 5 6
+	// 7 8 9 10 11 12 13 14
+	// left/right child of x is (2x+1), (2x+2), respectively.
 	private static void percolateDown(int[] arr, int i, int n){
-		int child = 2*i;
-		int rightChild = 2*i+1;
-		if(child <= n){
-			if((rightChild <= n) && (arr[child] < arr[rightChild])){
+		int child = 2*i+1;
+		int rightChild = 2*i+2;
+		if(child < n){
+			if((rightChild < n) && (arr[child] < arr[rightChild])){
 				child = rightChild;
 			}
 			if(arr[i] < arr[child]){
@@ -150,22 +156,15 @@ public class SortingTest
 	{
 		int n = value.length;
 		// Step 1. Build heap.
-		int[] heap = new int[n+1];
-		for(int i=1; i<=n; i++){
-			heap[i] = value[i-1];
-			int now = i; // to prevent modification of i
-			while(heap[now/2] < heap[now] && now > 1){
-				swap(heap, now/2, now);
-				now /= 2;
-			}
+		for(int i=n/2-1; i>=0; i--){
+			percolateDown(value, i, n);
 		}
 		// Step 2. Sorting.
-		for(int i=n; i>=2; i--){
-			swap(heap, 1, i);
-			percolateDown(heap, 1, i-1);
+		for(int i=n-1; i>=1; i--){
+			swap(value, 0, i);
+			percolateDown(value, 0, i);
 		}
-		value = Arrays.copyOfRange(heap, 1, heap.length);
-		return (value);
+		return value;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -203,9 +202,25 @@ public class SortingTest
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static int[] DoQuickSort(int[] value)
+	private static int partition(int[] value, int lo, int hi){
+		int pivot = value[hi];
+		int i = lo-1;
+		for(int j=lo; j<hi; j++){
+			if(value[j] < pivot){
+				i += 1;
+				swap(value, i, j);
+			}
+		}
+		swap(value, i+1, hi);
+		return i+1;
+	}
+	private static int[] DoQuickSort(int[] value, int lo, int hi)
 	{
-		// TODO : Quick Sort 를 구현하라.
+		if(lo < hi){
+			int p = partition(value, lo, hi);
+			DoQuickSort(value, lo, p-1);
+			DoQuickSort(value, p+1, hi);
+		}
 		return (value);
 	}
 
