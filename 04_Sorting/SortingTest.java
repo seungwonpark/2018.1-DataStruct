@@ -62,7 +62,7 @@ public class SortingTest
 						newvalue = DoMergeSort(newvalue);
 						break;
 					case 'Q':	// Quick Sort
-						newvalue = DoQuickSort(newvalue, 0, newvalue.length-1);
+						newvalue = DoQuickSort(newvalue);
 						break;
 					case 'R':	// Radix Sort
 						newvalue = DoRadixSort(newvalue);
@@ -101,7 +101,7 @@ public class SortingTest
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static int[] DoBubbleSort(int[] value)
+	public static int[] DoBubbleSort(int[] value)
 	{
 		int n = value.length;
 		boolean swapped = true;
@@ -118,7 +118,7 @@ public class SortingTest
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static int[] DoInsertionSort(int[] value)
+	public static int[] DoInsertionSort(int[] value)
 	{
 		int n = value.length;
 		for(int i=1; i<n; i++){
@@ -152,7 +152,7 @@ public class SortingTest
 			}
 		}
 	}
-	private static int[] DoHeapSort(int[] value)
+	public static int[] DoHeapSort(int[] value)
 	{
 		int n = value.length;
 		// Step 1. Build heap.
@@ -168,7 +168,7 @@ public class SortingTest
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static int[] DoMergeSort(int[] value)
+	public static int[] DoMergeSort(int[] value)
 	{
 		int n = value.length;
 		if(n > 1){
@@ -214,18 +214,22 @@ public class SortingTest
 		swap(value, i+1, hi);
 		return i+1;
 	}
-	private static int[] DoQuickSort(int[] value, int lo, int hi)
+	public static int[] DoQuickSort(int[] value){
+		RecursiveQuickSort(value, 0, value.length-1);
+		return (value);
+	}
+	public static int[] RecursiveQuickSort(int[] value, int lo, int hi)
 	{
 		if(lo < hi){
 			int p = partition(value, lo, hi);
-			DoQuickSort(value, lo, p-1);
-			DoQuickSort(value, p+1, hi);
+			RecursiveQuickSort(value, lo, p-1);
+			RecursiveQuickSort(value, p+1, hi);
 		}
 		return (value);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	private static int[] DoRadixSort(int[] value)
+	public static int[] DoRadixSort(int[] value)
 	{
 		final long INT_MAX = 214738456L;
 		final int RADIX = 4;
