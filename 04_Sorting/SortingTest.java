@@ -144,6 +144,7 @@ public class SortingTest
 		int rightChild = 2*i+2;
 		if(child < n){
 			if((rightChild < n) && (arr[child] < arr[rightChild])){
+				// find max index of arr[child], arr[rightChild]
 				child = rightChild;
 			}
 			if(arr[i] < arr[child]){
@@ -164,7 +165,7 @@ public class SortingTest
 			swap(value, 0, i);
 			percolateDown(value, 0, i);
 		}
-		return value;
+		return (value);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,7 +232,7 @@ public class SortingTest
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	public static int[] DoRadixSort(int[] value)
 	{
-		final long INT_MAX = 214738456L;
+		final long INT_MAX = 2147483648L;
 		final int RADIX = 4;
 		int n = value.length;
 		Long[] temp = new Long[n];
