@@ -101,6 +101,7 @@ public class SortingTest
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Referred to https://en.wikipedia.org/wiki/Bubble_sort#Implementation
 	public static int[] DoBubbleSort(int[] value)
 	{
 		int n = value.length;
