@@ -3,27 +3,30 @@ public class AVLTree<K extends Comparable<K>, V>{
 	public AVLTree(){
 		root = null;
 	}
+
 	public void insert(K key, V value){
 		TreeNode<K, V> x = new TreeNode<>(key, value);
+		if(root == null){
+			root = x;
+			return;
+		}
 		TreeNode<K, V> now = root;
 		while(true){
+			int cmp = key.compareTo(now.getKey());
+			assert(cmp != 0);
+
+			TreeNode<K, V> p = now; // temporarily stores parent.
+			if(cmp < 0) now = now.getLeft();
+			else 		now = now.getRight();
+
+			// if it reaches leaf node, then insert & rebalance.
 			if(now == null){
-				now = x;
-				break;
+				if(cmp < 0) p.setLeft(x);
+				else 		p.setRight(x);
+				x.setParent(p);
+				root = p.rebalance();
+				return;
 			}
-			boolean alreadyExists = false;
-			switch(key.compareTo(now.getKey())){
-				case -1:
-					now = now.getLeft();
-					break;
-				case 1:
-					now = now.getRight();
-					break;
-				case 0:
-					alreadyExists = true;
-					break;
-			}
-			if(alreadyExists) break;
 		}
 	}
 	public V get(K query){
@@ -31,17 +34,17 @@ public class AVLTree<K extends Comparable<K>, V>{
 		while(true){
 			// must ensure that this does not lead to infinite loop
 			if(now == null) return null;
-			switch(query.compareTo(now.getKey())){
-				case -1:
-					now = now.getLeft();
-					break;
-				case 1:
-					now = now.getRight();
-					break;
-				case 0:
-					return now.getValue();
+			int cmp = query.compareTo(now.getKey());
+			if(cmp < 0) now = now.getLeft();
+			else if(cmp > 0) now = now.getRight();
+			else{
+				return now.getValue();
 			}
 		}
+	}
+	@Override
+	public String toString(){
+		return root.toString();
 	}
 }
 
@@ -50,6 +53,7 @@ class TreeNode<K extends Comparable<K>, V>{
 	private K key;
 	private V value;
 	public TreeNode(K key, V value){
+		this.left = this.right = this.parent = null;
 		this.key = key;
 		this.value = value;
 	}
@@ -64,6 +68,18 @@ class TreeNode<K extends Comparable<K>, V>{
 	}
 	public TreeNode<K, V> getRight(){
 		return this.right;
+	}
+	public TreeNode<K, V> getParent(){
+		return this.parent;
+	}
+	public void setLeft(TreeNode<K, V> x){
+		this.left = x;
+	}
+	public void setRight(TreeNode<K, V> x){
+		this.right = x;
+	}
+	public void setParent(TreeNode<K, V> x){
+		this.parent = x;
 	}
 
 	public int height(TreeNode<K, V> x){
@@ -86,6 +102,7 @@ class TreeNode<K extends Comparable<K>, V>{
 		else{
 			n = this;
 		}
+
 		return this.parent != null ?
 			this.parent.rebalance() : n;
 	}
@@ -116,7 +133,7 @@ class TreeNode<K extends Comparable<K>, V>{
 		TreeNode<K, V> target = this.left;
 		TreeNode<K, V> t2 = target.right;
 
-		target.parent = p;;
+		target.parent = p;
 
 		if(p != null){
 			if(p.left == this) 	p.left 	= target;
@@ -137,6 +154,15 @@ class TreeNode<K extends Comparable<K>, V>{
 	public TreeNode<K, V> rotateRightLeft(){
 		this.right.rotateRight();
 		return this.rotateLeft();
+	}
+
+	// pre-order traversal of AVLTree
+	@Override
+	public String toString(){
+		String ret = key.toString();
+		if(this.left != null) 	ret += ' ' + left.	toString();
+		if(this.right != null) 	ret += ' ' + right.	toString();
+		return ret;
 	}
 }
 

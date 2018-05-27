@@ -2,11 +2,11 @@ import java.io.*;
 import java.util.*;
 
 public class Matching{
-	static MyHashTable<LinkedList<Pair<Integer, Integer>>> db;
+	static MyHashTable<LinkedList<MyPair>> db;
 
-	public static void main(String args[]){
+	public static void main(String args[]) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		db = new MyHashTable<LinkedList<Pair<Integer, Integer>>>();
+		db = new MyHashTable<LinkedList<MyPair>>();
 
 		while (true){
 			try{
@@ -25,17 +25,17 @@ public class Matching{
 		String arg = input.substring(2);
 		Command cmd;
 		if(input.startsWith("< ")){
-			cmd = new FileCmd(arg);
+			cmd = new ReadFile(arg);
 		}
 		else if(input.startsWith("@ ")){
-			cmd = new SlotCmd(arg);
+			cmd = new PrintSlot(arg);
 		}
 		else if(input.startsWith("? ")){
-			cmd = new PhraseCmd(arg);
+			cmd = new SearchPattern(arg);
 		}
 		else{
 			throw new Exception("invalid command.");
 		}
-		cmd.apply(db);
+		cmd.execute(db);
 	}
 }
