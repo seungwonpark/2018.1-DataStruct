@@ -72,7 +72,7 @@ class SearchPattern implements Command{
 		}
 		// to avoid java.util.ConcurrentModificationException
 		LinkedList<MyPair> elected = new LinkedList<MyPair>(candidates);
-		for(int i=l; i>0; i-=HASH_LEN){
+		for(int i=l; i>HASH_LEN; i-=HASH_LEN){
 			String query = arg.substring(i-HASH_LEN, i);
 			for(MyPair x : candidates){
 				boolean exists = false;
