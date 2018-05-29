@@ -6,7 +6,6 @@ public class Matching{
 
 	public static void main(String args[]) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		db = new MyHashTable<LinkedList<MyPair>>();
 
 		while (true){
 			try{
@@ -25,6 +24,9 @@ public class Matching{
 		String arg = input.substring(2);
 		Command cmd;
 		if(input.startsWith("< ")){
+			// initialize hashtable
+			db = new MyHashTable<LinkedList<MyPair>>();
+			
 			cmd = new ReadFile(arg);
 		}
 		else if(input.startsWith("@ ")){

@@ -1,0 +1,13 @@
+# data file
+data.txt
+
+# checker files
+Makefile
+script/*
+data/*
+Copier.java
+Main.java
+make.bat
+## checker temp. files
+y.err
+y.out
