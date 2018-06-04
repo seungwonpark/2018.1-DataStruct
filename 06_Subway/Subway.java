@@ -68,12 +68,12 @@ public class Subway{
 		} catch (IOException e){
 			throw new IOException("Exception occured while reading file(info. of edges)");
 		}
-		for(Station x : db.values()){
-			System.out.println(x.toString() + "\t\t" +  x.road.size());
-			for(Edge adj : x.road){
-				System.out.println(adj.toString());
-			}
-		}
+		// for(Station x : db.values()){
+		// 	System.out.println(x.toString() + "\t\t" +  x.road.size());
+		// 	for(Edge adj : x.road){
+		// 		System.out.println(adj.toString());
+		// 	}
+		// }
 
 		try{
 			while(true){
@@ -97,17 +97,23 @@ public class Subway{
 	static void find_path(String from, String to){
 		PriorityQueue<Status> q = new PriorityQueue<Status>();
 		HashSet<Station> visited = new HashSet<Station>();
-		HashMap<Station, Long> answer = new HashMap<Station, Long>();
+		// HashMap<Station, Long> answer = new HashMap<Station, Long>();
 		for(Station start : stNameList.get(from)){
 			q.add(new Status(start, 0, new ArrayList<Station>(){{add(start);}}));
 		}
 		while(q.size() != 0){
 			Status temp = q.poll();
-			if(visited.contains(temp)) continue;
-			answer.put(temp.now, temp.ans);
-			visited.add(temp.now);
-			System.out.println(temp.now.toString());
-			for(Edge adj : temp.now.road){
+			Station here = db.get(temp.now.stNo);
+			if(visited.contains(here)) continue;
+			if(to.equals(here.stName)){
+				System.out.println(temp.ans);
+				break;
+			}
+			// answer.put(here, temp.ans);
+			visited.add(here);
+			System.out.println(here.toString());
+			System.out.println(here.road.size());
+			for(Edge adj : here.road){
 				System.out.println(adj.toString());
 				if(!visited.contains(adj.next)){
 					temp.history.add(adj.next);
@@ -115,7 +121,8 @@ public class Subway{
 				}
 			}
 		}
-		System.out.println(answer.get(stNameList.get(to)));
+		// Station dest = stNameList.get(to);
+		// System.out.println(answer.get(db.get(dest.stNo)));
 	}
 	static void find_leasttransfer(String from, String to){
 		System.out.println("To be implemented");
