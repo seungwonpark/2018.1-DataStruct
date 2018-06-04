@@ -9,10 +9,12 @@ import java.io.*;
 */
 
 class Station{ // called by stNo. 
+	String stNo;
 	String stName;
 	String lineName;
 	ArrayList<Edge> road;
-	Station(String stName, String lineName){
+	Station(String stNo, String stName, String lineName){
+		this.stNo = stNo;
 		this.stName = stName;
 		this.lineName = lineName;
 		this.road = new ArrayList<Edge>();
@@ -23,6 +25,11 @@ class Station{ // called by stNo.
 	public boolean equalLine(Station o){
 		return this.lineName == o.lineName;
 	}
+
+	@Override
+	public String toString(){
+		return "(" + stName + ", " + lineName + ")";
+	}
 }
 
 class Edge{
@@ -31,6 +38,11 @@ class Edge{
 	Edge(Station next, long dist){
 		this.next = next;
 		this.dist = dist;
+	}
+
+	@Override
+	public String toString(){
+		return " --(" + Long.toString(dist) + ")--> " + next;
 	}
 }
 
@@ -55,43 +67,53 @@ class Status implements Comparable<Status>{
 }
 
 public class Subway{
+	private static HashMap<String, Station> db
+		= new HashMap<String, Station>(); // {stNo, Station}
+	private static HashMap<String, ArrayList<Station>> stNameList
+		= new HashMap<String, ArrayList<Station>>(); // {stName, {Station, Station, ... }}, ...
 	public static void main(String args[]) throws IOException{
-		BufferedReader data = new BufferedReader(new FileReader(args[0]));
-		BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-		HashMap<String, Station> db = new HashMap<String, Station>();
-		HashMap<String, ArrayList<Station>> stNameList = new HashMap<String, ArrayList<Station>>(); // {stName, {Station, Station, ... }}, ...
+		BufferedReader data
+			= new BufferedReader(new FileReader(args[0]));
+		BufferedReader stdin
+			= new BufferedReader(new InputStreamReader(System.in));
 		try{
 			// read and save station info.
 			String dataline;
 			while(!(dataline = data.readLine()).equals("")){ // until blank line
-				String[] line = dataline.split(" ");
-				String stNo = line[0]; // station number (1222)
-				String stName = line[1]; // station name (복정)
-				String lineName = line[2]; // station line name (K2)
-				db.put(stNo, new Station(stName, lineName));
+				String[] query = dataline.split(" ");
+				String stNo = query[0]; // station number (1222)
+				String stName = query[1]; // station name (복정)
+				String lineName = query[2]; // station line name (K2)
+				db.put(stNo, new Station(stNo, stName, lineName));
 				// assumption: pair (stName, lineName) is unique.
 
 				ArrayList<Station> temp = stNameList.get(stName);
 				if(temp == null){
 					temp = new ArrayList<Station>();
-					temp.add(new Station(stName, lineName));
+					temp.add(new Station(stNo, stName, lineName));
 					stNameList.put(stName, temp);
 				}
 				else{
-					temp.add(new Station(stName, lineName));
+					temp.add(new Station(stNo, stName, lineName));
 				}
 			}			
 		} catch (IOException e){
-			throw new IOException("Exception occured while reading file");
+			throw new IOException("Exception occured while reading file(info. of stations)");
 		}
 		try{
 			// read and establish connection between stations.
-			String dataline;
+			String dataline; // 133 132 20000000
 			while((dataline = data.readLine()) != null){ // until EOF
-				String[] line = dataline.split(" ");
-				String from = line[0];
-				String to = line[1];
-				long dist = Long.parseLong(line[2]);
+				String[] query = dataline.split(" ");
+				String from = query[0]; // 133
+				String to = query[1]; // 132
+				long dist = Long.parseLong(query[2]); // 20000000
+				// System.out.println(db.get(from));
+				// System.out.println(db.get(to).toString());
+				
+				// Edge temp = new Edge(db.get(to), dist);
+				// System.out.println("asdf\t" + db.get(from).toString() + temp.toString());
+				// db.get(from).road.add(temp);
 				db.get(from).road.add(new Edge(db.get(to), dist));
 			}
 			// connect all stations with same name, distance = 5
@@ -103,26 +125,33 @@ public class Subway{
 						Station lhs = samename.get(i);
 						Station rhs = samename.get(j);
 						final long INTERCHANGE = 5;
-						lhs.road.add(new Edge(lhs, INTERCHANGE));
-						rhs.road.add(new Edge(rhs, INTERCHANGE));
+						db.get(lhs.stNo).road.add(new Edge(rhs, INTERCHANGE));
+						db.get(rhs.stNo).road.add(new Edge(lhs, INTERCHANGE));
 					}
 				}
 			}
 		} catch (IOException e){
-			throw new IOException("Exception occured while reading file");
+			throw new IOException("Exception occured while reading file(info. of edges)");
 		}
+		for(Station x : db.values()){
+			System.out.println(x.toString() + "\t\t" +  x.road.size());
+			for(Edge adj : x.road){
+				System.out.println(adj.toString());
+			}
+		}
+
 		try{
 			while(true){
 				String dataline = stdin.readLine();
 				if(dataline.equals("QUIT")) break;
-				String[] line = dataline.split(" ");
-				String from = line[0];
-				String to = line[1];
-				if(line.length == 3){
-					find_leasttransfer(db, stNameList, from, to);
+				String[] query = dataline.split(" ");
+				String from = query[0];
+				String to = query[1];
+				if(query.length == 3){
+					find_leasttransfer(from, to);
 				}
 				else{
-					find_path(db, stNameList, from, to);
+					find_path(from, to);
 				}
 			}
 		}
@@ -130,7 +159,7 @@ public class Subway{
 			throw new IOException("Exception occured while reading stdin");
 		}
 	}
-	static void find_path(HashMap<String, Station> db, HashMap<String, ArrayList<Station>> stNameList, String from, String to){
+	static void find_path(String from, String to){
 		PriorityQueue<Status> q = new PriorityQueue<Status>();
 		HashSet<Station> visited = new HashSet<Station>();
 		HashMap<Station, Long> answer = new HashMap<Station, Long>();
@@ -142,7 +171,9 @@ public class Subway{
 			if(visited.contains(temp)) continue;
 			answer.put(temp.now, temp.ans);
 			visited.add(temp.now);
+			System.out.println(temp.now.toString());
 			for(Edge adj : temp.now.road){
+				System.out.println(adj.toString());
 				if(!visited.contains(adj.next)){
 					temp.history.add(adj.next);
 					q.add(new Status(adj.next, temp.ans + adj.dist, temp.history));
@@ -151,7 +182,7 @@ public class Subway{
 		}
 		System.out.println(answer.get(stNameList.get(to)));
 	}
-	static void find_leasttransfer(HashMap<String, Station> db, HashMap<String, ArrayList<Station>> stNameList, String from, String to){
+	static void find_leasttransfer(String from, String to){
 		System.out.println("To be implemented");
 	}
 }
