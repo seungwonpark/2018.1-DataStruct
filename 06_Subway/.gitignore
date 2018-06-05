@@ -1,3 +1,13 @@
 # data
 data
 temp.txt
+
+#checker
+Auxiliary.java
+data/*
+enc.chk
+info/*
+list.kipa
+Main.java
+make.bat
+Makefile
