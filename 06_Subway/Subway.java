@@ -2,6 +2,7 @@ import java.util.*;
 import java.io.*;
 
 public class Subway{
+	static final long INTERCHANGE = 5;
 	private static HashMap<String, Station> db
 		= new HashMap<String, Station>(); // {stNo, Station}
 	private static HashMap<String, ArrayList<Station>> stNameList
@@ -43,14 +44,9 @@ public class Subway{
 				String from = query[0]; // 133
 				String to = query[1]; // 132
 				long dist = Long.parseLong(query[2]); // 20000000
-				// System.out.println(db.get(from));
-				// System.out.println(db.get(to).toString());
-				
-				// Edge temp = new Edge(db.get(to), dist);
-				// System.out.println("asdf\t" + db.get(from).toString() + temp.toString());
-				// db.get(from).road.add(temp);
 				db.get(from).road.add(new Edge(db.get(to), dist));
 			}
+
 			// connect all stations with same name, distance = 5
 			for(ArrayList<Station> samename : stNameList.values()){
 				if(samename.size() == 0) throw new IOException("samename size = 0");
@@ -59,7 +55,6 @@ public class Subway{
 					for(int j=i+1; j<samename.size(); j++){
 						Station lhs = samename.get(i);
 						Station rhs = samename.get(j);
-						final long INTERCHANGE = 5;
 						db.get(lhs.stNo).road.add(new Edge(rhs, INTERCHANGE));
 						db.get(rhs.stNo).road.add(new Edge(lhs, INTERCHANGE));
 					}
@@ -68,12 +63,6 @@ public class Subway{
 		} catch (IOException e){
 			throw new IOException("Exception occured while reading file(info. of edges)");
 		}
-		// for(Station x : db.values()){
-		// 	System.out.println(x.toString() + "\t\t" +  x.road.size());
-		// 	for(Edge adj : x.road){
-		// 		System.out.println(adj.toString());
-		// 	}
-		// }
 
 		try{
 			while(true){
@@ -97,32 +86,37 @@ public class Subway{
 	static void find_path(String from, String to){
 		PriorityQueue<Status> q = new PriorityQueue<Status>();
 		HashSet<Station> visited = new HashSet<Station>();
-		// HashMap<Station, Long> answer = new HashMap<Station, Long>();
 		for(Station start : stNameList.get(from)){
-			q.add(new Status(start, 0, new ArrayList<Station>(){{add(start);}}));
+			q.add(new Status(start, 0, new ArrayList<Path>(){{add(new Path(start.stName, false));}}));
 		}
 		while(q.size() != 0){
 			Status temp = q.poll();
 			Station here = db.get(temp.now.stNo);
 			if(visited.contains(here)) continue;
 			if(to.equals(here.stName)){
+				StringBuilder output = new StringBuilder();
+				for(Path passed : temp.history){
+					output.append(passed.toString() + " ");
+				}
+				System.out.println(output.toString().trim());
 				System.out.println(temp.ans);
 				break;
 			}
-			// answer.put(here, temp.ans);
 			visited.add(here);
-			System.out.println(here.toString());
-			System.out.println(here.road.size());
 			for(Edge adj : here.road){
-				System.out.println(adj.toString());
 				if(!visited.contains(adj.next)){
-					temp.history.add(adj.next);
+					if(adj.next.stName.equals(temp.history.get(temp.history.size()-1).stName)){
+						temp.history.remove(temp.history.size() - 1);
+						temp.history.add(new Path(adj.next.stName, true));
+					}
+					else{
+						temp.history.add(new Path(adj.next.stName, false));
+					}
 					q.add(new Status(adj.next, temp.ans + adj.dist, temp.history));
+					temp.history.remove(temp.history.size() - 1);
 				}
 			}
 		}
-		// Station dest = stNameList.get(to);
-		// System.out.println(answer.get(db.get(dest.stNo)));
 	}
 	static void find_leasttransfer(String from, String to){
 		System.out.println("To be implemented");
