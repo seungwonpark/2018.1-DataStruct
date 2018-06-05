@@ -92,7 +92,6 @@ public class Subway{
 		// perform dijkstra algorithm
 		while(q.size() != 0){
 			Status temp = q.poll();
-			System.out.println("\t" + temp.showHistory() + "\t" + temp.ans);
 			Station here = db.get(temp.now.stNo);
 			if(visited.contains(here)) continue;
 			if(to.equals(here.stName)){
@@ -110,13 +109,17 @@ public class Subway{
 						nextName.equals(temp.history.get(temp.history.size()-1).stName)){
 						temp.history.remove(temp.history.size() - 1);
 						temp.history.add(new Path(nextName, true));
+						q.add(new Status(adj.next, temp.ans + adj.dist, temp.history));
+						// restore temp.history after insertion to p.q.
+						temp.history.remove(temp.history.size() - 1);
+						temp.history.add(new Path(nextName, false));
 					}
 					else{
 						temp.history.add(new Path(nextName, false));
+						q.add(new Status(adj.next, temp.ans + adj.dist, temp.history));
+						// restore temp.history after insertion to p.q.
+						temp.history.remove(temp.history.size() - 1);
 					}
-					q.add(new Status(adj.next, temp.ans + adj.dist, temp.history));
-					// restore temp.history after insertion to p.q.
-					temp.history.remove(temp.history.size() - 1);
 				}
 			}
 		}
