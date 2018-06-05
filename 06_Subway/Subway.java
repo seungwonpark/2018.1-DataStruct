@@ -89,30 +89,33 @@ public class Subway{
 		for(Station start : stNameList.get(from)){
 			q.add(new Status(start, 0, new ArrayList<Path>(){{add(new Path(start.stName, false));}}));
 		}
+		// perform dijkstra algorithm
 		while(q.size() != 0){
 			Status temp = q.poll();
+			System.out.println("\t" + temp.showHistory() + "\t" + temp.ans);
 			Station here = db.get(temp.now.stNo);
 			if(visited.contains(here)) continue;
 			if(to.equals(here.stName)){
-				StringBuilder output = new StringBuilder();
-				for(Path passed : temp.history){
-					output.append(passed.toString() + " ");
-				}
-				System.out.println(output.toString().trim());
+				// print things when relaxation to destination is finished
+				// and then break.
+				System.out.println(temp.showHistory());
 				System.out.println(temp.ans);
 				break;
 			}
 			visited.add(here);
 			for(Edge adj : here.road){
 				if(!visited.contains(adj.next)){
-					if(adj.next.stName.equals(temp.history.get(temp.history.size()-1).stName)){
+					String nextName = adj.next.stName;
+					if(temp.history.size() > 0 &&
+						nextName.equals(temp.history.get(temp.history.size()-1).stName)){
 						temp.history.remove(temp.history.size() - 1);
-						temp.history.add(new Path(adj.next.stName, true));
+						temp.history.add(new Path(nextName, true));
 					}
 					else{
-						temp.history.add(new Path(adj.next.stName, false));
+						temp.history.add(new Path(nextName, false));
 					}
 					q.add(new Status(adj.next, temp.ans + adj.dist, temp.history));
+					// restore temp.history after insertion to p.q.
 					temp.history.remove(temp.history.size() - 1);
 				}
 			}

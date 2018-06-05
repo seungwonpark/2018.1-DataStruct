@@ -11,3 +11,5 @@ list.kipa
 Main.java
 make.bat
 Makefile
+y.err
+y.out
